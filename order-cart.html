@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>빙샌드 주문 어플리케이션</title>
+  <link rel="stylesheet" href="style/style.css">
+  <style>
+    :root {
+      --bnb-height: 5.25em;
+    }
+    
+    .primary-btn {
+      --paddingY: 1.5em;
+      border-radius: var(--radius);
+    }
+    
+    #take-out-btn,
+    #delivery-btn {
+      --img: url(img/icon/icon-hamburger.svg);
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      border-radius: var(--radius);
+      background: var(--bg, var(--white));
+      color: var(--black);
+      box-shadow: var(--shadow-bottom);
+      
+      &#delivery-btn {
+        --img: url(img/icon/icon-delivery.svg);
+      }
+
+      &.checked {
+        --bg: var(--orange);
+        --filter: none;
+        color: var(--white);
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: var(--img) no-repeat center / auto 80%;
+        opacity: 0.25;
+        filter: var(--filter, brightness(60%));
+      }
+
+      p {
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        position: absolute;
+        left: 1em;
+        top: 1em;
+        width: calc(100% - 2em);
+        gap: 0;
+        align-items: start;
+      }
+    }
+
+    .modal {
+      --transition: opacity;
+      --duration: 75ms;
+
+      .modal-contents {
+        opacity: 0;
+
+        .modal-on & {
+          opacity: 1;
+        }
+        
+        .details {
+          font-size: calc((var(--regular) + var(--small)) / 2);
+          gap: 0.25em;
+        }
+      }
+    }
+    
+    nav {
+      z-index: 99;
+      position: fixed;
+      bottom: 0;
+      display: flex;
+      width: 100%;
+      height: var(--bnb-height);
+      padding: var(--spacingY-1) var(--spacingX-3);
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      box-shadow: var(--shadow-top);
+    }
+  </style>
+  <style>
+
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <div id="screen">
+      <header id="header" data-title="장바구니" data-prev-page="order-dish.html"></header>
+  
+      <div id="contents" style="background: hsl(0, 0%, 90%);">
+        <section>
+          <article class="gap-2">
+            <div class="cart-component"></div>
+            <a href="order-dish.html" class="primary-btn w-100p add-menu-btn">메뉴를 추가할래요</a>
+            <div id="delivery-method" class="flex-row w-100p gap-1">
+              <button id="take-out-btn" class="checked">
+                <p class="fw-bold">
+                  테이크아웃
+                </p>
+              </button>
+              <button id="delivery-btn">
+                <p class="fw-bold">
+                  배달 주문
+                  <span class="fw-bold fz-small">+3000원</span>
+                </p>
+              </button>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <div id="confirm" class="modal">
+        <div class="modal-contents gap-3">
+          <p class="title">주문이 완료되었어요!</p>
+          <div class="flex-col gap-1 w-100p">
+            <div class="flex-row gap-1">
+              <p class="store-name fw-bold"></p>
+              <p class="date">
+                <span class="month"></span>월
+                <span class="day"></span>일
+                (<span class="week"></span>)
+              </p>
+            </div>
+            <div class="horizontal-line"></div>
+            <div class="details flex-col"></div>
+            <div class="horizontal-line"></div>
+            <p class="price" style="margin-left: auto;"></p>
+          </div>
+          <a href="index.html" id="submit-btn" class="primary-btn w-100p bg-orange">확인</a>
+        </div>
+      </div>
+      
+      <nav id="invoive">
+        <div>
+          <p id="store-invoice" class="fz-large fw-bold"></p>
+          <p>
+            <span id="price-invoice"></span> |
+            <span id="method-invoice"></span>
+          </p>
+        </div>
+        <button class="primary-btn open-modal-btn">주문하기</button>
+      </nav>
+    </div>
+  </div>
+  <script src="script/data.js"></script>
+  <script src="script/component.js"></script>
+  <script src="script/script.js"></script>
+  <script>
+    const $confirm = document.getElementById('confirm');
+    const $confirmStoreName = $confirm.querySelector('.store-name');
+    const $confirmPrice = $confirm.querySelector('.price');
+    const $confirmDetails = $confirm.querySelector('.details');
+    const $takeOutBtn = document.getElementById('take-out-btn');
+    const $deliveryBtn = document.getElementById('delivery-btn');
+    const $submitBtn = document.getElementById('submit-btn');
+    const $storeInvoice = document.getElementById('store-invoice');
+    const $priceInvoice = document.getElementById('price-invoice');
+    const $methodInvoice = document.getElementById('method-invoice');
+    
+    function toggleDelivery() {
+      if (event.target.classList.contains('checked')) return;
+      cartInfo.delivery = cartInfo.delivery ? false : true;
+      $deliveryBtn.classList.toggle('checked');
+      $takeOutBtn.classList.toggle('checked');
+      renderInvoice();
+    }
+
+    $takeOutBtn.addEventListener('click', toggleDelivery);
+    $deliveryBtn.addEventListener('click', toggleDelivery);
+
+    $submitBtn.addEventListener('click', () => {
+      localStorage.removeItem('cartInfo');
+    });
+
+    $cartComponents.forEach((e) => {
+      e.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-item-btn')) {
+          const $item = e.target.closest('.item');
+          const index = [...$item.parentElement.children].indexOf($item);
+          cartInfo.items.splice(index, 1);
+          localStorage.setItem('cartInfo', JSON.stringify(cartInfo));
+          $cartComponents.forEach((e) => renderCartComp(e));
+          renderInvoice();
+        }
+      });
+    });
+
+    function renderInvoice() {
+      let totalPrice = calculateTotalPrice();
+      let method = '테이크아웃';
+      if (cartInfo.delivery) {
+        totalPrice += 3000;
+        method = '배달 주문'
+      }
+      const storeName = storeInfo[cartInfo.store].name;
+      const price = totalPrice.toLocaleString();
+      const details = cartInfo.items
+        .flat()
+        .map((id) => `<p>${menuInfo[id].kr} 1개</p>`)
+        .join('');
+
+      $storeInvoice.textContent = storeName;
+      $priceInvoice.textContent = `${price}원`;
+      $methodInvoice.textContent = method;
+
+      $confirmStoreName.textContent = storeName;
+      $confirmPrice.textContent = `총합 ${price}원`;
+      $confirmDetails.innerHTML = details;
+
+      if (cartInfo.items[0]) {
+        $openModalBtn.style.removeProperty('pointerEvents');
+        $openModalBtn.style.removeProperty('opacity');
+      } else {
+        $openModalBtn.style.pointerEvents = 'none';
+        $openModalBtn.style.opacity = 0.75;
+      }
+    } renderInvoice();
+  </script>
+</body>
+</html>

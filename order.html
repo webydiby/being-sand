@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>빙샌드 주문 어플리케이션</title>
+  <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+  <div id="wrap">
+    <div id="screen">
+      <header id="header" data-title="주문하기" data-prev-page="index.html"></header>
+  
+      <div id="contents" class="bg-orange c-white">
+        <section>
+          <article>
+            <p class="title box">최근에 주문한 매장</p>
+            <div class="store-component" data-store-id="store-01" data-href="order-dish.html"></div>
+          </article>
+          
+          <article>
+            <p class="title box">주변 매장</p>
+            <div class="store-component" data-store-id="store-02" data-href="order-dish.html"></div>
+            <div class="store-component" data-store-id="store-03" data-href="order-dish.html"></div>
+          </article>
+        </section>
+      </div>
+      
+      <nav id="bnb" data-current-category="order"></nav>
+    </div>
+  </div>
+  <script src="script/data.js"></script>
+  <script src="script/component.js"></script>
+  <script src="script/script.js"></script>
+</body>
+</html>

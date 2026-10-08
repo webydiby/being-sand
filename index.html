@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>빙샌드 주문 어플리케이션</title>
+    <link rel="stylesheet" href="style/style.css">
+    <style>
+      #splash {
+        --dur-1: 150ms;
+        --dly-1: 1200ms;
+        --dur-2: 150ms;
+        --dly-2: calc(150ms + 1200ms + 300ms);
+        --dur-3: 300ms;
+        --dly-3: calc(150ms + 1200ms + 300ms + 150ms + 1500ms);
+        z-index: 100;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: var(--orange);
+        animation: scene-3 var(--dur-3) ease-out var(--dly-3) forwards;
+
+        .txt-box {
+          position: absolute;
+          left: 50%;
+          top: 0;
+          transform: translateX(-50%);
+          width: 40%;
+          height: 100%;
+          background: url(img/splash-text.svg) no-repeat center / contain;
+          
+          .fade {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            left: 100%;
+            background: var(--orange);
+            animation: scene-1 var(--dur-1) ease-out var(--dly-1) forwards;
+          }
+        }
+    
+        .logo {
+          position: absolute;
+          left: 60%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          width: 62.5%;
+          max-width: 400px;
+          left: 50%;
+          aspect-ratio: 5 / 2;
+          opacity: 0;
+          border-radius: 20% 20% 20% 20% / 50% 50% 50% 50%;
+          background: #fff url(img/logo.svg) no-repeat center / 50%;
+          animation: scene-2 var(--dur-2) ease-out var(--dly-2) forwards;
+        }
+      }
+      
+      
+      @keyframes scene-1 {
+        to {
+          left: 0;
+        }
+      }
+      
+      @keyframes scene-2 {
+        to {
+          left: 50%;
+          opacity: 1;
+        }
+      }
+      
+      @keyframes scene-3 {
+        to {
+          visibility: hidden;
+          opacity: 0;
+        }
+      }
+      
+      .banner {
+        width: 100%;
+        max-height: calc(100svh - var(--header-height) - var(--bnb-height));
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      #slide {
+        --gap: var(--spacingX-1);
+        gap: var(--gap);
+        margin-top: var(--spacingY-1);
+        --col: 1;
+        --nth: 0;
+
+        @container screen (min-width: 321px) {
+          & {
+            --col: 2;
+          }
+        }
+
+        @container screen (min-width: 769px) {
+          & {
+            --col: 3;
+          }
+        }
+        
+        .inner {
+          flex: 1;
+          gap: var(--gap);
+          overflow: hidden;
+
+          .item {
+            transform: translateX(calc(-100% * var(--nth) - var(--gap) * var(--nth)));
+            display: flex;
+            flex-direction: column;
+            width: calc((100% - (var(--gap) * (var(--col) - 1))) / var(--col));
+            flex-shrink: 0;
+            align-items: center;
+            gap: 1em;
+            padding: 1.125em 1em;
+            border-radius: calc(var(--radius));
+            background: var(--white);
+            box-shadow: var(--shadow);
+            transition: transform 300ms ease;
+
+            img {
+              width: 100%;
+            }
+
+            span {
+              text-align: center;
+            }
+          }
+        }
+        
+        #prev-slide,
+        #next-slide {
+          width: 1.25em;
+          cursor: pointer;
+
+          &#prev-slide {
+            opacity: calc(1 * var(--nth) + 0.75);
+          }
+  
+          &#next-slide {
+            transform: rotate(180deg);
+            opacity: max(var(--maxSlide) - var(--nth) - var(--col), 0.75);
+          }
+        }
+      }
+
+      </style>
+  </head>
+  <body>
+    <div id="wrap">
+      <div id="screen">
+      <div id="splash" class="scene-3">
+        <div class="txt-box">
+          <div class="fade scene-1"></div>
+        </div>
+        <div class="logo scene-2"></div>
+      </div>
+
+      <header id="header"></header>
+
+      <div id="contents">
+        <img src="img/banner.png" alt="배너 이미지" class="banner">
+
+        <section class="bg-tomato c-white">
+          <article>
+            <p class="title box">이번주 인기 메뉴에요!</p>
+            <div id="slide" class="flex-row w-100p">
+              <svg id="prev-slide" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.17157 12.1736V1.002C7.17157 0.1111 6.09443 -0.335067 5.46447 0.294898L0.585786 5.17358C-0.195262 5.95463 -0.195262 7.22095 0.585786 8.002L5.46447 12.8807C6.09443 13.5106 7.17157 13.0645 7.17157 12.1736Z" fill="white"/></svg>
+
+              <div class="inner flex-row c-black">
+                <a href="order-dish-05.html" class="item">
+                  <img src="img/dish/dish-05.png">
+                  <span>시그니처 호밀 샌드위치</span>
+                </a>
+                <a href="order-dish-04.html" class="item">
+                  <img src="img/dish/dish-04.png">
+                  <span>바질 & 카프레제 크루아상 샌드</span>
+                </a>
+                <a href="order-dish-03.html" class="item">
+                  <img src="img/dish/dish-03.png">
+                  <span>햄치즈 치아바타 샌드</span>
+                </a>
+                <a href="order-dish-02.html" class="item">
+                  <img src="img/dish/dish-02.png">
+                  <span>햄 & 에그샐러드 샌드위치</span>
+                </a>
+                <a href="order-dish-01.html" class="item">
+                  <img src="img/dish/dish-01.png">
+                  <span>닭가슴살 베이컨 샌드위치</span>
+                </a>
+              </div>
+              
+              <svg id="next-slide" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.17157 12.1736V1.002C7.17157 0.1111 6.09443 -0.335067 5.46447 0.294898L0.585786 5.17358C-0.195262 5.95463 -0.195262 7.22095 0.585786 8.002L5.46447 12.8807C6.09443 13.5106 7.17157 13.0645 7.17157 12.1736Z" fill="white"/></svg>
+            </div>
+          </article>
+        </section>
+        
+        <section class="bg-green c-white">
+          <article>
+            <p class="title box">최근에 주문한 매장</p>
+            <div class="store-component" data-store-id="store-01" data-href="order-dish.html"></div>
+          </article>
+        </section>
+      </div>
+      
+      <nav id="bnb" data-current-category="index"></nav>
+    </div>
+  </div>
+  <script src="script/data.js"></script>
+  <script src="script/component.js"></script>
+  <script src="script/script.js"></script>
+  <script>
+    const $splash = document.getElementById('splash');
+    const $slide = document.getElementById('slide');
+    const $prevSlide = document.getElementById('prev-slide');
+    const $nextSlide = document.getElementById('next-slide');
+    const $innerSlide = document.querySelector('#slide .inner');
+    const maxSlide = $slide.querySelector('.inner').childElementCount - 1;
+    
+    $slide.style.setProperty('--maxSlide', maxSlide + 1);
+    $prevSlide.addEventListener('click', moveSlide);
+    $nextSlide.addEventListener('click', moveSlide);
+
+    function moveSlide(event) {
+      let nowSlide = parseInt(
+        getComputedStyle($slide)
+          .getPropertyValue('--nth')
+      );
+
+      let showing = parseInt(
+        getComputedStyle($slide)
+          .getPropertyValue('--col') - 1
+      );
+      
+      if (nowSlide > 0
+      && event.currentTarget === $prevSlide)
+        --nowSlide;
+
+      else if (nowSlide < maxSlide - showing
+      && event.currentTarget === $nextSlide)
+        ++nowSlide;
+
+      $slide.style.setProperty('--nth', nowSlide);
+    }
+    
+    function startSplash() {
+      const $lastScene = document.querySelector('.scene-3');
+      $wrap.style.overflow = 'hidden';
+      $wrap.style.height = '100vh';
+      $splash.style.display = 'block';
+      
+      $lastScene.addEventListener('animationend', (e) => {
+        if (e.target !== $lastScene) return;
+        $wrap.style.removeProperty('overflow');
+        $wrap.style.removeProperty('height');
+        $splash.style.removeProperty('display');
+      });
+    }
+
+    (function splashCheck() {
+      if (!revisit)
+        startSplash();
+      else $splash.style.display = 'none';
+    }());
+  </script>
+</body>
+</html>
